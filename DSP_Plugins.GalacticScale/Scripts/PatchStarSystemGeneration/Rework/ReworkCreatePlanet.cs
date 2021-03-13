@@ -459,7 +459,7 @@ namespace GalacticScale.Scripts.PatchStarSystemGeneration {
 
         public static void SetLuts(int segments, float planetRadius)
         {
-            if (PatchOnPlanetGrid.keyedLUTs.ContainsKey(segments) && PatchOnPlatformSystem.keyedLUTs.ContainsKey(segments) && PatchUIBuildingGrid.LUT512.ContainsKey(segments))
+            if (PatchOnPlanetGrid.keyedLUTs.ContainsKey(segments) && PatchOnPlatformSystem.keyedLUTs.ContainsKey(segments) && PatchUIBuildingGrid.ImageDataLUT.ContainsKey(segments))
             {
                 return;
             }
@@ -471,7 +471,9 @@ namespace GalacticScale.Scripts.PatchStarSystemGeneration {
             float lastMajorRadius = planetRadius;
             int lastMajorRadiusCount = numSegments * 4;
 
-            int[] classicLUT = new int[512];
+            int classicLUTSize = 1024;
+
+            int[] classicLUT = new int[classicLUTSize];
             classicLUT[0] = 1;
 
             for (int cnt = 0; cnt < numSegments; cnt++)
@@ -493,7 +495,7 @@ namespace GalacticScale.Scripts.PatchStarSystemGeneration {
             }
 
             int last = 1;
-            for(int oldlLutIdx = 1; oldlLutIdx < 512; oldlLutIdx++)
+            for(int oldlLutIdx = 1; oldlLutIdx < classicLUTSize; oldlLutIdx++)
             {
                 if(classicLUT[oldlLutIdx] > last)
                 {
@@ -508,7 +510,7 @@ namespace GalacticScale.Scripts.PatchStarSystemGeneration {
                 }
             }
 
-            //DebugClassicLut(classicLUT); //<-- Debug print function for whole LUT
+            DebugClassicLut(classicLUT); //<-- Debug print function for whole LUT
 
             //Fill all Look Up Tables (Dictionaries really)
             if (!PatchOnPlanetGrid.keyedLUTs.ContainsKey(segments))
@@ -518,9 +520,9 @@ namespace GalacticScale.Scripts.PatchStarSystemGeneration {
             if (!PatchOnPlatformSystem.keyedLUTs.ContainsKey(segments)) {
                 PatchOnPlatformSystem.keyedLUTs.Add(segments, lut);
             }
-            if (!PatchUIBuildingGrid.LUT512.ContainsKey(segments))
+            if (!PatchUIBuildingGrid.ImageDataLUT.ContainsKey(segments))
             {
-                PatchUIBuildingGrid.LUT512.Add(segments, classicLUT);
+                PatchUIBuildingGrid.ImageDataLUT.Add(segments, classicLUT);
             }
         }
 
@@ -528,7 +530,8 @@ namespace GalacticScale.Scripts.PatchStarSystemGeneration {
         {
 
             Patch.Debug("Classic LUT:", LogLevel.Debug, true);
-            for (int a = 0; a < 32; a++)
+            int rows = classicLUT.Length / 16;
+            for (int a = 0; a < rows; a++)
             {
                 string str = "";
                 for (int b = 0; b < 16; b++)

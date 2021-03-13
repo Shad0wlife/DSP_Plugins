@@ -17,7 +17,7 @@ namespace GalacticScale.Scripts.PatchPlanetSize
         {
             Patch.Debug("PlanetLoaded was called!", BepInEx.Logging.LogLevel.Debug, true);
             int segments = (int)(planet.radius / 4f + 0.1f) * 4;
-            if (!PatchUIBuildingGrid.LUT512.ContainsKey(segments))
+            if (!PatchUIBuildingGrid.ImageDataLUT.ContainsKey(segments))
             {
                 PatchStarSystemGeneration.ReworkPlanetGen.SetLuts(segments, planet.radius);
             }
